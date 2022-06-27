@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.data.annotation.Id;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
@@ -23,9 +23,9 @@ public class Customer {
     private String username;
     private String encodedPassword;
     private String fiscalCode;
-    private LocalDate createdDate;
-    private LocalDate lastModifiedDate;
-    private LocalDate lastLoginDate;
+    private LocalDateTime createdDate;
+    private LocalDateTime lastModifiedDate;
+    private LocalDateTime lastLoginDate;
     private Status status;
     private String email;
     private String phoneNumber;

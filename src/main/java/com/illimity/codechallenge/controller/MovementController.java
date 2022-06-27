@@ -1,13 +1,13 @@
 package com.illimity.codechallenge.controller;
 
 import com.illimity.codechallenge.exception.ResponseException;
-import com.illimity.codechallenge.model.*;
-import com.illimity.codechallenge.repository.CustomerRepository;
+import com.illimity.codechallenge.model.Movement;
+import com.illimity.codechallenge.model.LoginInputModel;
+import com.illimity.codechallenge.model.MovementInputModel;
 import com.illimity.codechallenge.response.ErrorResponse;
-import com.illimity.codechallenge.service.CustomerService;
-import com.illimity.codechallenge.service.PasswordEncoder;
+import com.illimity.codechallenge.service.MovementService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.bind.validation.ValidationErrors;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -17,45 +17,48 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/customers")
-public class CustomerController {
+@RequestMapping("/movements")
+public class MovementController {
 
     @Autowired
-    private CustomerService customerService;
+    private MovementService movementService;
 
     @PostMapping
-    public Customer createCustomer(@RequestBody @Valid CustomerInputModel customerInputModel){
-        return customerService.createCustomer(customerInputModel);
+    public Movement createMovement(@RequestBody @Valid MovementInputModel movementInputModel){
+        return movementService.createMovement(movementInputModel);
     }
 
-    @GetMapping("{customerId:[0-9a-f]{8}(?:-[a-f0-9]{4}){4}[a-f0-9]{8}}")
-    public Customer loadCustomer(@PathVariable("customerId") UUID customerId) {
-        return customerService.findById(customerId);
+    @GetMapping("{movementId:[0-9a-f]{8}(?:-[a-f0-9]{4}){4}[a-f0-9]{8}}")
+    public Movement loadMovement(@PathVariable("movementId") UUID movementId) {
+        return movementService.findById(movementId);
     }
 
     @GetMapping
-    public List<Customer> loadCustomers() {
-        return customerService.findAllCustomers();
+    public List<Movement> loadMovements() {
+        return movementService.findAllMovements();
     }
 
-    @DeleteMapping("{customerId:[0-9a-f]{8}(?:-[a-f0-9]{4}){4}[a-f0-9]{8}}")
-    public void deleteCustomer(@PathVariable("customerId") UUID customerId){
-        customerService.deleteCustomer(customerId);
+    @DeleteMapping("{movementId:[0-9a-f]{8}(?:-[a-f0-9]{4}){4}[a-f0-9]{8}}")
+    public void deleteMovement(@PathVariable("movementId") UUID movementId){
+        movementService.deleteMovement(movementId);
     }
 
     @DeleteMapping
-    public void deleteCustomers(){
-        customerService.deleteCustomers();
+    public void deleteMovements(){
+        movementService.deleteMovements();
     }
 
-    @PostMapping("login")
-    public ResponseEntity<CustomerOutputModel> login(@RequestBody @Valid LoginInputModel loginInputModel){
-        CustomerOutputModel customerOutputModel = customerService.login(loginInputModel.getUsername(), loginInputModel.getPassword());
-        return ResponseEntity.ok(customerOutputModel);
+    @GetMapping("paginated/{customerId:[0-9a-f]{8}(?:-[a-f0-9]{4}){4}[a-f0-9]{8}}")
+    public ResponseEntity<List<Movement>> loadPaginatedMovements(@PathVariable("customerId") UUID customerId, Pageable pageable){
+        List<Movement> movements = movementService.findAllMovementsOrderedByDate(customerId, pageable);
+        return ResponseEntity.ok(movements);
     }
 
     @ExceptionHandler

@@ -3,12 +3,11 @@ package com.illimity.codechallenge.converter;
 import com.illimity.codechallenge.model.Customer;
 import com.illimity.codechallenge.model.CustomerInputModel;
 import com.illimity.codechallenge.model.CustomerOutputModel;
-import com.illimity.codechallenge.model.Status;
 import com.illimity.codechallenge.service.PasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -26,7 +25,7 @@ public class CustomerConverter {
         customer.setUsername(customerInputModel.getUsername());
         customer.setEncodedPassword(passwordEncoder.encode(customerInputModel.getPassword()));
         customer.setFiscalCode(customerInputModel.getFiscalCode());
-        customer.setCreatedDate(LocalDate.now());
+        customer.setCreatedDate(LocalDateTime.now());
         customer.setStatus(customerInputModel.getStatus());
         customer.setEmail(customerInputModel.getEmail());
         customer.setPhoneNumber(customerInputModel.getPhoneNumber());

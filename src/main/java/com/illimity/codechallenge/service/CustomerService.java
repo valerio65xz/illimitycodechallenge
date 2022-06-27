@@ -3,17 +3,14 @@ package com.illimity.codechallenge.service;
 import com.illimity.codechallenge.converter.CustomerConverter;
 import com.illimity.codechallenge.exception.ResponseError;
 import com.illimity.codechallenge.exception.ResponseException;
-import com.illimity.codechallenge.model.Customer;
-import com.illimity.codechallenge.model.CustomerInputModel;
-import com.illimity.codechallenge.model.CustomerOutputModel;
-import com.illimity.codechallenge.model.Status;
+import com.illimity.codechallenge.model.*;
 import com.illimity.codechallenge.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class CustomerService {
@@ -37,15 +34,12 @@ public class CustomerService {
         return repository.save(customer);
     }
 
-    public List<CustomerOutputModel> findAllCustomers(){
-        return repository.findAll().stream()
-                .map(customerConverter::toCustomerOutputModel)
-                .collect(Collectors.toList());
+    public List<Customer> findAllCustomers(){
+        return repository.findAll();
     }
 
-    public CustomerOutputModel findById(UUID id){
+    public Customer findById(UUID id){
         return repository.findById(id)
-                .map(customerConverter::toCustomerOutputModel)
                 .orElse(null);
     }
 
@@ -63,7 +57,6 @@ public class CustomerService {
         if (customer == null){
             throw new ResponseException(ResponseError.CUSTOMER_NOT_FOUND);
         }
-
         if (!passwordEncoder.matches(rawPassword, customer.getEncodedPassword())){
             throw new ResponseException(ResponseError.UNAUTHORIZED);
         }
@@ -71,7 +64,11 @@ public class CustomerService {
             throw new ResponseException(ResponseError.STATUS_NOT_VALID);
         }
 
-        return customerConverter.toCustomerOutputModel(customer);
+        customer.setLastModifiedDate(LocalDateTime.now());
+        customer.setLastLoginDate(LocalDateTime.now());
+
+        Customer savedCustomer = repository.save(customer);
+        return customerConverter.toCustomerOutputModel(savedCustomer);
     }
 
 }
