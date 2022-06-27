@@ -4,10 +4,11 @@ import com.illimity.codechallenge.model.Customer;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface CustomerRepository extends MongoRepository<Customer, UUID> {
 
-    List<Customer> findByName(String name);
+    Customer findByUsername(String username);
 
 }
