@@ -3,7 +3,10 @@ package com.illimity.codechallenge.service;
 import com.illimity.codechallenge.converter.CustomerConverter;
 import com.illimity.codechallenge.exception.ResponseError;
 import com.illimity.codechallenge.exception.ResponseException;
-import com.illimity.codechallenge.model.*;
+import com.illimity.codechallenge.model.Customer;
+import com.illimity.codechallenge.model.CustomerInputModel;
+import com.illimity.codechallenge.model.CustomerOutputModel;
+import com.illimity.codechallenge.model.Status;
 import com.illimity.codechallenge.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,14 +18,18 @@ import java.util.UUID;
 @Service
 public class CustomerService {
 
-    @Autowired
-    private CustomerRepository repository;
+    private final CustomerRepository repository;
+
+    private final CustomerConverter customerConverter;
+
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    private CustomerConverter customerConverter;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    public CustomerService(CustomerRepository repository, CustomerConverter customerConverter, PasswordEncoder passwordEncoder){
+        this.repository = repository;
+        this.customerConverter = customerConverter;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public Customer createCustomer(CustomerInputModel customerInputModel){
         Customer customer = customerConverter.toCustomer(customerInputModel);

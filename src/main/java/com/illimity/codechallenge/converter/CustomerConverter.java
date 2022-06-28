@@ -13,8 +13,12 @@ import java.util.UUID;
 @Service
 public class CustomerConverter {
 
+    private final PasswordEncoder passwordEncoder;
+
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    public CustomerConverter(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public Customer toCustomer(CustomerInputModel customerInputModel){
         Customer customer = new Customer();

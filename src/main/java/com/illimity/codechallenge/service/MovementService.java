@@ -1,29 +1,28 @@
 package com.illimity.codechallenge.service;
 
-import com.illimity.codechallenge.controller.MovementController;
 import com.illimity.codechallenge.converter.MovementConverter;
-import com.illimity.codechallenge.exception.ResponseError;
-import com.illimity.codechallenge.exception.ResponseException;
-import com.illimity.codechallenge.model.*;
+import com.illimity.codechallenge.model.Movement;
+import com.illimity.codechallenge.model.MovementInputModel;
 import com.illimity.codechallenge.repository.MovementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class MovementService {
 
-    @Autowired
-    private MovementRepository repository;
+
+    private final MovementRepository repository;
+    private final MovementConverter movementConverter;
 
     @Autowired
-    private MovementConverter movementConverter;
+    public MovementService(MovementRepository repository, MovementConverter movementConverter) {
+        this.repository = repository;
+        this.movementConverter = movementConverter;
+    }
 
     public Movement createMovement(MovementInputModel movementInputModel){
         Movement movement = movementConverter.toMovement(movementInputModel);
@@ -49,8 +48,6 @@ public class MovementService {
     }
 
     public List<Movement> findAllMovementsByCustomerId(UUID customerId, Pageable pageable){
-        Pageable pageable2 = PageRequest.of(0, 10, Sort.by("date").descending());
-
         return repository.findAllByCustomerId(customerId, pageable);
     }
 

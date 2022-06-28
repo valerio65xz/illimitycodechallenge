@@ -1,31 +1,28 @@
 package com.illimity.codechallenge.controller;
 
-import com.illimity.codechallenge.exception.ResponseException;
-import com.illimity.codechallenge.model.*;
-import com.illimity.codechallenge.repository.CustomerRepository;
-import com.illimity.codechallenge.response.ErrorResponse;
+import com.illimity.codechallenge.model.Customer;
+import com.illimity.codechallenge.model.CustomerInputModel;
+import com.illimity.codechallenge.model.CustomerOutputModel;
+import com.illimity.codechallenge.model.LoginInputModel;
 import com.illimity.codechallenge.service.CustomerService;
-import com.illimity.codechallenge.service.PasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.bind.validation.ValidationErrors;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.validation.BindException;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/customers")
 public class CustomerController {
 
+    private final CustomerService customerService;
+
     @Autowired
-    private CustomerService customerService;
+    public CustomerController(CustomerService customerService) {
+        this.customerService = customerService;
+    }
 
     @PostMapping
     public Customer createCustomer(@RequestBody @Valid CustomerInputModel customerInputModel){
