@@ -58,49 +58,4 @@ public class CustomerController {
         return ResponseEntity.ok(customerOutputModel);
     }
 
-    @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handleException(BindException ex) {
-        List<String> errors = ex.getBindingResult().getAllErrors().stream()
-                .map(this::getValidationErrorMessage)
-                .collect(Collectors.toList());
-
-        return createErrorResponseEntity(HttpStatus.BAD_REQUEST.value(), errors);
-    }
-
-    @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handleException(HttpMessageNotReadableException ex) {
-        return createErrorResponseEntity(HttpStatus.BAD_REQUEST.value(), Collections.singletonList(ex.getMessage()));
-    }
-
-    @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handleException(ResponseException ex) {
-        return createErrorResponseEntity(
-                ex.getError().getHttpStatus(),
-                Collections.singletonList(ex.getError().getMessage()));
-    }
-
-    private ResponseEntity<ErrorResponse> createErrorResponseEntity(int status, List<String> message){
-        ErrorResponse errorResponse = new ErrorResponse();
-        errorResponse.setTimestamp(LocalDateTime.now());
-        errorResponse.setStatus(status);
-        errorResponse.setMessage(message);
-
-        return ResponseEntity
-                .status(status)
-                .body(errorResponse);
-    }
-
-    private String getValidationErrorMessage(ObjectError objectError){
-        String field = Optional.ofNullable(objectError)
-                .map(ObjectError::getCodes)
-                .map(codes -> codes[1].substring(codes[3].length() + 1))
-                .map(substring -> substring.concat(" "))
-                .orElse("");
-
-        return Optional.ofNullable(objectError)
-                .map(ObjectError::getDefaultMessage)
-                .map(field::concat)
-                .orElse("");
-    }
-
 }

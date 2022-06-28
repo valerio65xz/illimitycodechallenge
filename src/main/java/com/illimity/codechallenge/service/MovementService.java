@@ -48,7 +48,7 @@ public class MovementService {
         repository.deleteAll();
     }
 
-    public List<Movement> findAllMovementsOrderedByDate(UUID customerId, Pageable pageable){
+    public List<Movement> findAllMovementsByCustomerId(UUID customerId, Pageable pageable){
         Pageable pageable2 = PageRequest.of(0, 10, Sort.by("date").descending());
 
         return repository.findAllByCustomerId(customerId, pageable);
