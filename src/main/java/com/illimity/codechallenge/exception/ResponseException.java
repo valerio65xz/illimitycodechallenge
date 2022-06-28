@@ -2,15 +2,15 @@ package com.illimity.codechallenge.exception;
 
 public class ResponseException extends RuntimeException {
 
-    private final ResponseError error;
+    private final ResponseErrorEnum error;
     private final String message;
 
-    public ResponseException(ResponseError error) {
+    public ResponseException(ResponseErrorEnum error) {
         this.error = error;
         this.message = null;
     }
 
-    public ResponseError getError() {
+    public ResponseErrorEnum getError() {
         return error;
     }
 

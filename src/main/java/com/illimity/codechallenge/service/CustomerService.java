@@ -1,7 +1,7 @@
 package com.illimity.codechallenge.service;
 
 import com.illimity.codechallenge.converter.CustomerConverter;
-import com.illimity.codechallenge.exception.ResponseError;
+import com.illimity.codechallenge.exception.ResponseErrorEnum;
 import com.illimity.codechallenge.exception.ResponseException;
 import com.illimity.codechallenge.model.Customer;
 import com.illimity.codechallenge.model.CustomerInputModel;
@@ -35,7 +35,7 @@ public class CustomerService {
         Customer customer = customerConverter.toCustomer(customerInputModel);
 
         if (repository.findByUsername(customer.getUsername()) != null){
-            throw new ResponseException(ResponseError.USER_ALREADY_EXISTS);
+            throw new ResponseException(ResponseErrorEnum.USER_ALREADY_EXISTS);
         }
 
         return repository.save(customer);
@@ -62,13 +62,13 @@ public class CustomerService {
         Customer customer = repository.findByUsername(username);
 
         if (customer == null){
-            throw new ResponseException(ResponseError.CUSTOMER_NOT_FOUND);
+            throw new ResponseException(ResponseErrorEnum.CUSTOMER_NOT_FOUND);
         }
         if (!passwordEncoder.matches(rawPassword, customer.getEncodedPassword())){
-            throw new ResponseException(ResponseError.UNAUTHORIZED);
+            throw new ResponseException(ResponseErrorEnum.UNAUTHORIZED);
         }
         if (Status.ACTIVE != customer.getStatus()){
-            throw new ResponseException(ResponseError.STATUS_NOT_VALID);
+            throw new ResponseException(ResponseErrorEnum.STATUS_NOT_VALID);
         }
 
         customer.setLastModifiedDate(LocalDateTime.now());

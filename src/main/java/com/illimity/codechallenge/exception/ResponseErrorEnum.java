@@ -1,6 +1,6 @@
 package com.illimity.codechallenge.exception;
 
-public enum ResponseError {
+public enum ResponseErrorEnum {
 
     BAD_REQUEST("001", "Bad request", 400),
     STATUS_NOT_VALID("002", "Customer status must be active", 400),
@@ -12,7 +12,7 @@ public enum ResponseError {
     private final String message;
     private final int httpStatus;
 
-    ResponseError(String code, String message, int httpStatus) {
+    ResponseErrorEnum(String code, String message, int httpStatus) {
         this.code = code;
         this.message = message;
         this.httpStatus = httpStatus;
