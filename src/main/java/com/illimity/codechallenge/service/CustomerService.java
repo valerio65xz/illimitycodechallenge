@@ -18,15 +18,15 @@ import java.util.UUID;
 @Service
 public class CustomerService {
 
-    private final CustomerRepository repository;
+    private final CustomerRepository customerRepository;
 
     private final CustomerConverter customerConverter;
 
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public CustomerService(CustomerRepository repository, CustomerConverter customerConverter, PasswordEncoder passwordEncoder){
-        this.repository = repository;
+    public CustomerService(CustomerRepository customerRepository, CustomerConverter customerConverter, PasswordEncoder passwordEncoder){
+        this.customerRepository = customerRepository;
         this.customerConverter = customerConverter;
         this.passwordEncoder = passwordEncoder;
     }
@@ -34,32 +34,32 @@ public class CustomerService {
     public Customer createCustomer(CustomerInputModel customerInputModel){
         Customer customer = customerConverter.toCustomer(customerInputModel);
 
-        if (repository.findByUsername(customer.getUsername()) != null){
+        if (customerRepository.findByUsername(customer.getUsername()) != null){
             throw new ResponseException(ResponseErrorEnum.USER_ALREADY_EXISTS);
         }
 
-        return repository.save(customer);
+        return customerRepository.save(customer);
     }
 
     public List<Customer> findAllCustomers(){
-        return repository.findAll();
+        return customerRepository.findAll();
     }
 
     public Customer findById(UUID id){
-        return repository.findById(id)
+        return customerRepository.findById(id)
                 .orElse(null);
     }
 
     public void deleteCustomer(UUID id){
-        repository.deleteById(id);
+        customerRepository.deleteById(id);
     }
 
     public void deleteCustomers(){
-        repository.deleteAll();
+        customerRepository.deleteAll();
     }
 
     public CustomerOutputModel login(String username, String rawPassword){
-        Customer customer = repository.findByUsername(username);
+        Customer customer = customerRepository.findByUsername(username);
 
         if (customer == null){
             throw new ResponseException(ResponseErrorEnum.CUSTOMER_NOT_FOUND);
@@ -74,7 +74,7 @@ public class CustomerService {
         customer.setLastModifiedDate(LocalDateTime.now());
         customer.setLastLoginDate(LocalDateTime.now());
 
-        Customer savedCustomer = repository.save(customer);
+        Customer savedCustomer = customerRepository.save(customer);
         return customerConverter.toCustomerOutputModel(savedCustomer);
     }
 

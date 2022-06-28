@@ -15,40 +15,40 @@ import java.util.UUID;
 public class MovementService {
 
 
-    private final MovementRepository repository;
+    private final MovementRepository movementRepository;
     private final MovementConverter movementConverter;
 
     @Autowired
-    public MovementService(MovementRepository repository, MovementConverter movementConverter) {
-        this.repository = repository;
+    public MovementService(MovementRepository movementRepository, MovementConverter movementConverter) {
+        this.movementRepository = movementRepository;
         this.movementConverter = movementConverter;
     }
 
     public Movement createMovement(MovementInputModel movementInputModel){
         Movement movement = movementConverter.toMovement(movementInputModel);
 
-        return repository.save(movement);
+        return movementRepository.save(movement);
     }
 
     public List<Movement> findAllMovements(){
-        return repository.findAll();
+        return movementRepository.findAll();
     }
 
     public Movement findById(UUID id){
-        return repository.findById(id)
+        return movementRepository.findById(id)
                 .orElse(null);
     }
 
     public void deleteMovement(UUID id){
-        repository.deleteById(id);
+        movementRepository.deleteById(id);
     }
 
     public void deleteMovements(){
-        repository.deleteAll();
+        movementRepository.deleteAll();
     }
 
     public List<Movement> findAllMovementsByCustomerId(UUID customerId, Pageable pageable){
-        return repository.findAllByCustomerId(customerId, pageable);
+        return movementRepository.findAllByCustomerId(customerId, pageable);
     }
 
 }

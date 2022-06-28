@@ -24,7 +24,7 @@ import static org.mockito.Mockito.when;
 public class CustomerServiceTest extends BaseUnitTest {
 
     @Mock
-    private CustomerRepository repository;
+    private CustomerRepository customerRepository;
     @Mock
     private CustomerConverter customerConverter;
     @Mock
@@ -40,8 +40,8 @@ public class CustomerServiceTest extends BaseUnitTest {
         Customer customer = random(Customer.class);
 
         when(customerConverter.toCustomer(any())).thenReturn(customer);
-        when(repository.findByUsername(anyString())).thenReturn(null);
-        when(repository.save(any())).thenReturn(customer);
+        when(customerRepository.findByUsername(anyString())).thenReturn(null);
+        when(customerRepository.save(any())).thenReturn(customer);
 
         Customer result = customerService.createCustomer(customerInputModel);
 
@@ -52,8 +52,8 @@ public class CustomerServiceTest extends BaseUnitTest {
                 .isEqualTo(customerInputModel);
 
         verify(customerConverter).toCustomer(customerInputModel);
-        verify(repository).findByUsername(customer.getUsername());
-        verify(repository).save(customer);
+        verify(customerRepository).findByUsername(customer.getUsername());
+        verify(customerRepository).save(customer);
     }
 
     @Test
@@ -62,14 +62,14 @@ public class CustomerServiceTest extends BaseUnitTest {
         Customer customer = random(Customer.class);
 
         when(customerConverter.toCustomer(any())).thenReturn(customer);
-        when(repository.findByUsername(anyString())).thenReturn(customer);
+        when(customerRepository.findByUsername(anyString())).thenReturn(customer);
 
         assertThatExceptionOfType(ResponseException.class)
                 .isThrownBy(() -> customerService.createCustomer(customerInputModel))
                 .matches(e -> e.getError().equals(USER_ALREADY_EXISTS));
 
         verify(customerConverter).toCustomer(customerInputModel);
-        verify(repository).findByUsername(customer.getUsername());
+        verify(customerRepository).findByUsername(customer.getUsername());
     }
 
     @Test
@@ -80,9 +80,9 @@ public class CustomerServiceTest extends BaseUnitTest {
         customer.setStatus(Status.ACTIVE);
         CustomerOutputModel customerOutputModel = random(CustomerOutputModel.class);
 
-        when(repository.findByUsername(anyString())).thenReturn(customer);
+        when(customerRepository.findByUsername(anyString())).thenReturn(customer);
         when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
-        when(repository.save(any())).thenReturn(customer);
+        when(customerRepository.save(any())).thenReturn(customer);
         when(customerConverter.toCustomerOutputModel(any())).thenReturn(customerOutputModel);
 
         CustomerOutputModel result = customerService.login(username, rawPassword);
@@ -91,9 +91,9 @@ public class CustomerServiceTest extends BaseUnitTest {
                 .isNotNull()
                 .isEqualTo(customerOutputModel);
 
-        verify(repository).findByUsername(username);
+        verify(customerRepository).findByUsername(username);
         verify(passwordEncoder).matches(rawPassword, customer.getEncodedPassword());
-        verify(repository).save(customer);
+        verify(customerRepository).save(customer);
         verify(customerConverter).toCustomerOutputModel(customer);
     }
 
@@ -102,13 +102,13 @@ public class CustomerServiceTest extends BaseUnitTest {
         String username = random(String.class);
         String rawPassword = random(String.class);
 
-        when(repository.findByUsername(anyString())).thenReturn(null);
+        when(customerRepository.findByUsername(anyString())).thenReturn(null);
 
         assertThatExceptionOfType(ResponseException.class)
                 .isThrownBy(() -> customerService.login(username, rawPassword))
                 .matches(e -> e.getError().equals(CUSTOMER_NOT_FOUND));
 
-        verify(repository).findByUsername(username);
+        verify(customerRepository).findByUsername(username);
     }
 
     @Test
@@ -117,14 +117,14 @@ public class CustomerServiceTest extends BaseUnitTest {
         String rawPassword = random(String.class);
         Customer customer = random(Customer.class);
 
-        when(repository.findByUsername(anyString())).thenReturn(customer);
+        when(customerRepository.findByUsername(anyString())).thenReturn(customer);
         when(passwordEncoder.matches(anyString(), anyString())).thenReturn(false);
 
         assertThatExceptionOfType(ResponseException.class)
                 .isThrownBy(() -> customerService.login(username, rawPassword))
                 .matches(e -> e.getError().equals(UNAUTHORIZED));
 
-        verify(repository).findByUsername(username);
+        verify(customerRepository).findByUsername(username);
         verify(passwordEncoder).matches(rawPassword, customer.getEncodedPassword());
     }
 
@@ -135,14 +135,14 @@ public class CustomerServiceTest extends BaseUnitTest {
         Customer customer = random(Customer.class);
         customer.setStatus(Status.BLOCKED);
 
-        when(repository.findByUsername(anyString())).thenReturn(customer);
+        when(customerRepository.findByUsername(anyString())).thenReturn(customer);
         when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
 
         assertThatExceptionOfType(ResponseException.class)
                 .isThrownBy(() -> customerService.login(username, rawPassword))
                 .matches(e -> e.getError().equals(STATUS_NOT_VALID));
 
-        verify(repository).findByUsername(username);
+        verify(customerRepository).findByUsername(username);
         verify(passwordEncoder).matches(rawPassword, customer.getEncodedPassword());
     }
 
