@@ -12,7 +12,7 @@ Java > 1.8 is mandatory to run the project. If you want also to check and debug 
 If you want to just execute the project, open a terminal in your installation folder and type:
 
 ```sh
-java -jar illimitycodechallenge.jar
+java -jar CodeChallenge.jar
 ```
 
 then if you use Postman, you may import `IllimityChallenge.postman_collection.json` to import the collection.
