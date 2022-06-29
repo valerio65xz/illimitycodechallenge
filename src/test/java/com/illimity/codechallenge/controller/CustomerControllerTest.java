@@ -11,12 +11,15 @@ import com.illimity.codechallenge.service.CustomerService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
+
 import static com.illimity.codechallenge.exception.ResponseErrorEnum.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 public class CustomerControllerTest extends ControllerTest {
 
@@ -60,6 +63,62 @@ public class CustomerControllerTest extends ControllerTest {
         assertThat(result).isNotNull();
         assertThat(result.getStatus()).isEqualTo(400);
         assertThat(result.getMessage().get(0)).isEqualTo("status must not be null");
+    }
+
+    @Test
+    public void loadCustomer_success() {
+        UUID customerId = UUID.randomUUID();
+        String url = "/customers/" + customerId;
+        Customer customer = random(Customer.class);
+
+        when(customerService.findById(customerId)).thenReturn(customer);
+
+        Customer result = performAndExpect(get(url), Customer.class);
+
+        assertThat(result)
+                .isNotNull()
+                .usingRecursiveComparison()
+                .isEqualTo(customer);
+
+        verify(customerService).findById(customerId);
+    }
+
+    @Test
+    public void loadCustomers_success() {
+        String url = "/customers";
+        Customer customer = random(Customer.class);
+
+        when(customerService.findAllCustomers()).thenReturn(Collections.singletonList(customer));
+
+        List<Customer> result = performAndExpectWithCollection(get(url), List.class, Customer.class);
+
+        assertThat(result).isNotEmpty();
+        assertThat(result.get(0)).isEqualTo(customer);
+
+        verify(customerService).findAllCustomers();
+    }
+
+    @Test
+    public void deleteCustomer_success() {
+        UUID customerId = UUID.randomUUID();
+        String url = "/customers/" + customerId;
+
+        doNothing().when(customerService).deleteCustomer(customerId);
+
+        performAndExpect(delete(url));
+
+        verify(customerService).deleteCustomer(customerId);
+    }
+
+    @Test
+    public void deleteCustomers_success() {
+        String url = "/customers";
+
+        doNothing().when(customerService).deleteCustomers();
+
+        performAndExpect(delete(url));
+
+        verify(customerService).deleteCustomers();
     }
 
     @Test

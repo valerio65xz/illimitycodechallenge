@@ -49,6 +49,15 @@ public abstract class ControllerTest {
         }
     }
 
+    protected <T, O> O performAndExpect(MockHttpServletRequestBuilder mockHttpServletRequestBuilder, Class<O> response, ResultMatcher... resultMatchers) {
+        try {
+            MvcResult mvcResult = performAndExpect(mockHttpServletRequestBuilder, resultMatchers);
+            return parse(response, mvcResult);
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
     protected MvcResult performAndExpect(MockHttpServletRequestBuilder mockHttpServletRequestBuilder, ResultMatcher... resultMatchers) {
         try {
             ResultActions resultActions = mockMvc.perform(mockHttpServletRequestBuilder
