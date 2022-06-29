@@ -7,6 +7,14 @@ Creates a Simple Spring Boot project to manage Customers and Movements through R
 Java > 1.8 is mandatory to run the project. If you want also to check and debug the code, you can use an IDE like IntelliJ
 (recommended) or Eclipse.
 
+# Installation 🛠️
+
+You can clone the project from this link:
+
+```sh
+git clone https://github.com/valerio65xz/illimitycodechallenge.git
+```
+
 # Usage ℹ️
 
 If you want to just execute the project, open a terminal in your installation folder and type:
