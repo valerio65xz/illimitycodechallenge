@@ -11,7 +11,6 @@ import com.illimity.codechallenge.repository.CustomerRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 
 import static com.illimity.codechallenge.exception.ResponseErrorEnum.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,7 +29,6 @@ public class CustomerServiceTest extends BaseUnitTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
-    @Spy
     @InjectMocks
     private CustomerService customerService;
 

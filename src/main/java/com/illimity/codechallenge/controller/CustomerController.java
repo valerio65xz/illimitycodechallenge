@@ -25,18 +25,21 @@ public class CustomerController {
     }
 
     @PostMapping
-    public Customer createCustomer(@RequestBody @Valid CustomerInputModel customerInputModel){
-        return customerService.createCustomer(customerInputModel);
+    public ResponseEntity<Customer> createCustomer(@RequestBody @Valid CustomerInputModel customerInputModel){
+        Customer customer = customerService.createCustomer(customerInputModel);
+        return ResponseEntity.ok(customer);
     }
 
     @GetMapping("{customerId:[0-9a-f]{8}(?:-[a-f0-9]{4}){4}[a-f0-9]{8}}")
-    public Customer loadCustomer(@PathVariable("customerId") UUID customerId) {
-        return customerService.findById(customerId);
+    public ResponseEntity<Customer> loadCustomer(@PathVariable("customerId") UUID customerId) {
+        Customer customer = customerService.findById(customerId);
+        return ResponseEntity.ok(customer);
     }
 
     @GetMapping
-    public List<Customer> loadCustomers() {
-        return customerService.findAllCustomers();
+    public ResponseEntity<List<Customer>> loadCustomers() {
+        List<Customer> customers = customerService.findAllCustomers();
+        return ResponseEntity.ok(customers);
     }
 
     @DeleteMapping("{customerId:[0-9a-f]{8}(?:-[a-f0-9]{4}){4}[a-f0-9]{8}}")
